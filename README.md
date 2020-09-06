@@ -1,21 +1,5 @@
-# Identifying Twitter Influencers in Real-Time
+# Identifying Twitter Influencers in Real-time for NEOM’s Tourism Advertising Purpose 
 
-## Datasets description
-Datasets file included the following:
-- Datasets description file included the following information for each dataset:
-  * Stream Restrictions (Keyword,Location and Language)
-  * Actions Weights (Tweet, Retweet, Quote and Reply)
-  * Influencers Filters (Followers From, Followers To and verified accounts)
-  * Number of Top Influencers
-  *Window settings (Window Size and Update Interval)
-  * Dataset Information:
-    * Number of Actions
-    * First Action Time
-    * Last Action Time
-    * Capture Stream Duration
-- 8 different datasets in json file format
-- 8 results of the datasets in txt file format
-- The source code to run and get the results of the datasets (off-line)
 
 
 ## Source files description
@@ -32,9 +16,6 @@ The complate source code of the web in **falsk_app** file, which included the fo
     static                  JavaScript and CSS files of the web.
     templates               HTML files of the web pages (Search and dashboard).
 
-
-- **Datasets** file included all datasets (Raw data, results, description).
-- **Archive** file included our archived source code files during the semester.
 
 
 ### Functions Description
