@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <link href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/dist/echarts.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/echarts@4.7.0/map/js/world.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css"
+    integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ=="
+    crossorigin="" />
+
+  <!--Make sure you put this AFTER Leaflet's CSS -->
+  <script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"
+    integrity="sha512-gZwIG9x3wUXg2hdXF6+rVkLF/0Vi9U8D2Ntg4Ga5I5BZpVkVxlJWbSQtXPSiUTtC0TjtGOmxa1AJPuV0CPthew=="
+    crossorigin=""></script>
+  <title>Dashboard</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+
+<body>
+
+  <div class="container-fluid dark-element">
+    <div class="row content">
+      <div class="col-md-2 sidebar dark-element" style="position:fixed" id="sticky-sidebar">
+        <div class="row">
+          <div class="col title">
+            <i class="green" data-feather="info"></i>
+            <span class="green">DETAILS</span>
+          </div>
+        </div>
+        <div class="row details">
+          <div class="col">
+            <div class="details-heading">
+              <h3>General</h3>
+            </div>
+            <ul class="details-list">
+              <li>Time to Refresh: <span class="green" id="refresh-display">00:30mins</span></li>
+              <li>Results Duration: <span class="green" id="duration-display">01:00mins</span>
+              </li>
+              <li>Influencers Found: <span class="green" id="influencers-display"></span></li>
+
+            </ul>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="details-heading">
+              <h3>Filters</h3>
+            </div>
+            <ul class="details-list">
+              <li>Min. Follower Count: <span class="green" id="min-follower-count-display">OFF</span>
+              </li>
+              <li>Max. Follower Count: <span class="green" id="max-follower-count-display">OFF</span>
+              </li>
+              <li>Verified: <span class="green" id="verified-display">OFF</span></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="col-md-10 offset-2 light-element main card" style="margin-top: 20px" id="main">
+        <div class="row">
+          <div class="col">
+            <div class="card" style="margin-top: 30px">
+              <div class="card-header">
+                <h2>Influence Graph</h2>
+                <ul class="nav panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a>
+                  </li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <div class="chart-container">
+                  <div class="chart" id="inf" style="height: 500px;"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <div class="card-header">
+                <h2>Top Influencers</h2>
+                <ul class="nav panel_toolbox">
+                  <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                  </li>
+                  <li><a class="close-link"><i class="fa fa-close"></i></a>
+                  </li>
+                </ul>
+                <div class="clearfix"></div>
+              </div>
+              <div class="x_content">
+                <div class="chart-container">
+                  <div class="chart" id="line"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="row fixed-bottom align-items-center footer dark-element">
+      <div class="col-2 sidebar-nav">
+        <div class="row ">
+          <div class="col-6">
+            <div>
+              <a data-toggle="tooltip" data-placement="top" title="Home" data-original-title="Home"
+                href="{{ url_for('dashboard') }}">
+                <span><i data-feather="home"></i></span>
+              </a>
+            </div>
+          </div>
+          <div class="col-6"><a data-toggle="tooltip" data-placement="top" title="Search" data-original-title="Search"
+              href="{{ url_for('index') }}" id="search-icon">
+              <span><i data-feather="search"></i></span>
+            </a></div>
+        </div>
+      </div>
+      <div class="col-10">
+        <p class="text-center green"><em>Identifying Twitter Influencers © 2020</em></p>
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    feather.replace()
+  </script>
+
+  <script src="{{ url_for('static', filename='dashboard.js') }}"></script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,954 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.4.1/dist/jquery.min.js"></script>
+    <title>Search</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='search.css') }}">
+</head>
+
+<body class="dark-element">
+
+
+    <div class="container-fluid">
+        <div class="row justify-content-center align-items-center">
+            <div class="col-md-8 main-col">
+
+                <div class="card card-nav-tabs card-plain">
+                    <div id="main-div">
+                        <div class="card-header card-header-primary">
+                            <div class="nav-tabs-navigation">
+                                <div class="nav-tabs-wrapper">
+                                    <ul class="nav nav-tabs" data-tabs="tabs">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" href="#keyword" data-toggle="tab">Search by
+                                                Keyword</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#location" data-toggle="tab">Search by
+                                                Location</a>
+                                        </li>
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="#advanced" data-toggle="tab">Advanced Search</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body ">
+                            <div class="tab-content text-center">
+                                <div class="tab-pane active" id="keyword">
+                                    <p>
+                                        <form id='query-form'>
+                                            <div class="form-group">
+                                                <label for="keyword-field">Search by Keyword <span
+                                                        style="color: red">*</span></label>
+
+                                                <div class="input-group" id="keyword-query-field">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-outline-secondary" type="button"
+                                                            id="add-keyword-button">+</button>
+                                                    </div>
+                                                    <input required type="text" class="form-control" id="keyword-field"
+                                                        placeholder="e.g. Neom Challenge" aria-label="Keyword Search"
+                                                        aria-describedby="queryHelp" name="keyword">
+                                                    <div class="invalid-feedback">
+                                                        <div id="keyword-invalid">Please fill this field or the
+                                                            location
+                                                            field.</div>
+                                                        <div id="has-spaces">You have entered a keyword that contains
+                                                            spaces. </div>
+                                                    </div>
+                                                </div>
+                                                <small id="queryHelp" class="form-text text-muted">To use multiple
+                                                    keywords
+                                                    click the
+                                                    '+' button.
+                                                </small>
+                                                <small id="queryHelp" class="form-text text-muted">
+                                                    Keywords that are longer than one word must be seperated
+                                                    with an underscore '_'</small>
+                                            </div>
+                                            <div class="form-row mb-4 justify-content-between">
+                                                <div class="col-md-6">
+                                                    <div class="form-row mt-4">
+                                                        <div class="col"><label for="top-k">Number of
+                                                                Influencers <span style="color: red">*</span></label>
+                                                        </div>
+                                                        <div class="col"><input type="number" class="form-control"
+                                                                id="top-k" required aria-describedby="topkHelp" min='1'>
+                                                            <small id="topkHelp" class="form-text text-muted">Specify
+                                                                the
+                                                                number of
+                                                                influencers
+                                                                you
+                                                                want to find.</small></div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Minimum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="min-followers"
+                                                                aria-describedby="min-followersHelp" min="0">
+                                                            <small id="min-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                minimum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Maximum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="max-followers"
+                                                                aria-describedby="max-followersHelp" min="0">
+                                                            <small id="max-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                maximum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <div class="form-row mt-4">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input verified-switch"
+                                                                id="verified-switch-keyword">
+                                                            <label class="custom-control-label"
+                                                                for="verified-switch-keyword">Verified Users</label>
+                                                            <small id="verified-usersHelp"
+                                                                class="form-text text-muted">Get
+                                                                results for verified users only.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input action-switch"
+                                                                id="actions-switch-keyword">
+                                                            <label class="custom-control-label"
+                                                                for="actions-switch-keyword">Assign
+                                                                Priorities to
+                                                                Action
+                                                                Types</label>
+                                                            <small id="action-orderHelp"
+                                                                class="form-text text-muted">Arrange
+                                                                actions in ascending order of importance.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-4" id="togglable" style="display: none">
+                                                        <div class="col">
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Tweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="tweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Retweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="retweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Quote Retweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="qretweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Reply</p>
+                                                                </div>
+                                                                <div class="col-8" id="reply-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row justify-content-center">
+                                                <div class="col-4" style="text-align: center;">
+                                                    <button type="submit" class="btn btn-primary"
+                                                        id="submit">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </p>
+                                </div>
+                                <div class="tab-pane" id="location">
+                                    <p>
+                                        <form id='query-form'>
+                                            <div class="form-group">
+                                                <label for="location-field">Search by Location <span
+                                                        style="color: red">*</span></label>
+                                                <div class="input-group" id="location-query-field">
+                                                    <div class="input-group-prepend">
+                                                        <button class="btn btn-outline-secondary" type="button"
+                                                            id="add-location-button">+</button>
+                                                    </div>
+                                                    <input required name="location" type="text" class="form-control"
+                                                        id="location-field" placeholder="e.g. Saudi Arabia"
+                                                        aria-label="Location Search" aria-describedby="queryHelp">
+                                                </div>
+                                                <small id="queryHelp" class="form-text text-muted">To use multiple
+                                                    locations
+                                                    click the
+                                                    '+'
+                                                    button.</small>
+                                            </div>
+                                            <div class="form-row mb-4 justify-content-between">
+                                                <div class="col-md-6">
+                                                    <div class="form-row mt-4">
+                                                        <div class="col"><label for="top-k">Number of
+                                                                Influencers <span style="color: red">*</span></label>
+                                                        </div>
+                                                        <div class="col"><input type="number" class="form-control"
+                                                                id="top-k" required aria-describedby="topkHelp" min="1">
+                                                            <small id="topkHelp" class="form-text text-muted">Specify
+                                                                the
+                                                                number of
+                                                                influencers
+                                                                you
+                                                                want to find.</small></div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Minimum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="min-followers"
+                                                                aria-describedby="min-followersHelp" min="0">
+                                                            <small id="min-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                minimum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Maximum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="max-followers"
+                                                                aria-describedby="max-followersHelp" min="0">
+                                                            <small id="max-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                maximum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <div class="form-row mt-4">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input verified-switch"
+                                                                id="verified-switch-location">
+                                                            <label class="custom-control-label"
+                                                                for="verified-switch-location">Verified Users</label>
+                                                            <small id="verified-usersHelp"
+                                                                class="form-text text-muted">Get
+                                                                results for verified users only.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input action-switch"
+                                                                id="actions-switch-location">
+                                                            <label class="custom-control-label"
+                                                                for="actions-switch-location">Assign
+                                                                Priorities to
+                                                                Action
+                                                                Types</label>
+                                                            <small id="action-orderHelp"
+                                                                class="form-text text-muted">Arrange
+                                                                actions in ascending order of importance.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-4" id="togglable" style="display: none">
+                                                        <div class="col">
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Tweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="tweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="tweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Retweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="retweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="retweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Quote Retweet</p>
+                                                                </div>
+                                                                <div class="col-8" id="qretweet-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="qretweetRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p>Reply</p>
+                                                                </div>
+                                                                <div class="col-8" id="reply-scale">
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio1"
+                                                                            value="1">
+                                                                        <label class="form-check-label"
+                                                                            for="radio1">1</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio2"
+                                                                            value="2">
+                                                                        <label class="form-check-label"
+                                                                            for="radio2">2</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio3"
+                                                                            value="3">
+                                                                        <label class="form-check-label"
+                                                                            for="tweetRadio3">3</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio4"
+                                                                            value="4">
+                                                                        <label class="form-check-label"
+                                                                            for="radio4">4</label>
+                                                                    </div>
+                                                                    <div class="form-check form-check-inline">
+                                                                        <input class="form-check-input" type="radio"
+                                                                            name="replyRadioOptions" id="radio5"
+                                                                            value="5" checked>
+                                                                        <label class="form-check-label"
+                                                                            for="radio5">5</label>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="row justify-content-center">
+                                                <div class="col-4" style="text-align: center;">
+                                                    <button type="submit" class="btn btn-primary"
+                                                        id="submit">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </p>
+                                </div>
+                                <div class="tab-pane" id="advanced">
+                                    <p>
+
+                                        <form id='query-form'>
+                                            <div class="form-group">
+                                                <label for="keyword-field">Search by Keyword <span style="color: red"
+                                                        id="keyword-required-indicator">*</span></label>
+                                                <div class="input-group" id="keyword-query-field">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <input type="checkbox" id="keyword-checkbox" checked>
+                                                        </div>
+                                                        <button class="btn btn-outline-secondary" type="button"
+                                                            id="add-keyword-button">+</button>
+                                                    </div>
+                                                    <input required type="text" class="form-control" id="keyword-field"
+                                                        placeholder="e.g. Neom Challenge" aria-label="Keyword Search"
+                                                        aria-describedby="queryHelp">
+                                                    <div class="invalid-feedback">
+                                                        <div id="keyword-invalid">Please fill this field or the
+                                                            location
+                                                            field.</div>
+                                                        <div id="has-spaces">You have entered a keyword that contains
+                                                            spaces. </div>
+                                                    </div>
+                                                </div>
+
+                                                <small id="queryHelp" class="form-text text-muted">To use multiple
+                                                    keywords
+                                                    click the
+                                                    '+'
+                                                    button.</small>
+                                                <small id="queryHelp" class="form-text text-muted">
+                                                    Keywords that are longer than one word must be seperated
+                                                    with an underscore '_'</small>
+                                            </div>
+
+
+                                            <div class="form-group">
+                                                <label for="location-field">Search by Location <span style="color: red"
+                                                        id="location-required-indicator">*</span></label>
+                                                <div class="input-group" id="location-query-field">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <input type="checkbox" id="location-checkbox" checked>
+                                                        </div>
+                                                        <button class="btn btn-outline-secondary" type="button"
+                                                            id="add-location-button">+</button>
+                                                    </div>
+                                                    <input required type="text" class="form-control" id="location-field"
+                                                        placeholder="e.g. Saudi Arabia" aria-label="Location Search"
+                                                        aria-describedby="queryHelp">
+                                                    <div class="invalid-feedback" id="location-invalid">
+                                                        Please fill this field or the keyword field.
+                                                    </div>
+                                                </div>
+
+                                                <small id="queryHelp" class="form-text text-muted">To use multiple
+                                                    locations
+                                                    click the
+                                                    '+'
+                                                    button.</small>
+                                            </div>
+
+                                            <div class="form-group">
+                                                <label for="language-field">Search by Language <span style="color: red"
+                                                        id="language-required-indicator">*</span></label>
+                                                <div class="input-group" id="language-query-field">
+                                                    <div class="input-group-prepend">
+                                                        <div class="input-group-text">
+                                                            <input type="checkbox" id="language-checkbox" checked>
+                                                        </div>
+                                                        <button class="btn btn-outline-secondary" type="button"
+                                                            id="add-language-button">+</button>
+                                                    </div>
+                                                    <select required id="language-field" class="custom-select"
+                                                        id="inputGroupSelect01" aria-label="Language Search"
+                                                        aria-describedby="queryHelp">
+                                                        <option value="" disabled selected>Select Language</option>
+                                                        <option value="ar">Arabic</option>
+                                                        <option value="en">English</option>
+                                                        <option value="bn">Bengali</option>
+                                                        <option value="cs">Czech</option>
+                                                        <option value="da">Danish</option>
+                                                        <option value="nl">Dutch</option>
+                                                        <option value="en-gb">English UK</option>
+                                                        <option value="fa">Farsi</option>
+                                                        <option value="fil">Filipino</option>
+                                                        <option value="fi">Finnish</option>
+                                                        <option value="fr">French</option>
+                                                        <option value="de">German</option>
+                                                        <option value="el">Greek</option>
+                                                        <option value="he">Hebrew</option>
+                                                        <option value="hi">Hindi</option>
+                                                        <option value="hu">Hungarian</option>
+                                                        <option value="id">Indonesian</option>
+                                                        <option value="it">Italian</option>
+                                                        <option value="ja">Japanese</option>
+                                                        <option value="ko">Korean</option>
+                                                        <option value="msa">Malay</option>
+                                                        <option value="no">Norwegian</option>
+                                                        <option value="pl">Polish</option>
+                                                        <option value="pt">Portuguese</option>
+                                                        <option value="ro">Romanian</option>
+                                                        <option value="ru">Russian</option>
+                                                        <option value="zh-cn">Simplified Chinese</option>
+                                                        <option value="es">Spanish</option>
+                                                        <option value="sv">Swedish</option>
+                                                        <option value="th">Thai</option>
+                                                        <option value="zh-tw">Traditional Chinese</option>
+                                                        <option value="tr">Turkish</option>
+                                                        <option value="uk">Ukrainian</option>
+                                                        <option value="ur">Urdu</option>
+                                                        <option value="vi">Vietnamese</option>
+                                                    </select>
+                                                </div>
+                                                <small id="queryHelp" class="form-text text-muted">To use multiple
+                                                    languages
+                                                    click the
+                                                    '+'
+                                                    button.</small>
+                                            </div>
+
+                                            <div class="form-row mb-4 justify-content-between">
+                                                <div class="col-md-6">
+                                                    <div class="form-row mt-4">
+                                                        <div class="col"><label for="top-k">Number of
+                                                                Influencers <span style="color: red">*</span></label>
+                                                        </div>
+                                                        <div class="col"><input type="number" class="form-control"
+                                                                id="top-k" required aria-describedby="topkHelp" min="1">
+                                                            <small id="topkHelp" class="form-text text-muted">Specify
+                                                                the
+                                                                number of
+                                                                influencers
+                                                                you
+                                                                want to find.</small></div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Minimum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="min-followers"
+                                                                aria-describedby="min-followersHelp" min="0">
+                                                            <small id="min-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                minimum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="col"><label for="min-followers">Maximum Follower
+                                                                Count</label>
+                                                        </div>
+                                                        <div class="col">
+                                                            <input type="number" class="form-control" id="max-followers"
+                                                                aria-describedby="max-followersHelp" min="0">
+                                                            <small id="max-followersHelp"
+                                                                class="form-text text-muted">Specify the
+                                                                maximum number of followers for the
+                                                                influencers.</small>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-5">
+                                                    <div class="form-row mt-4">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input verified-switch"
+                                                                id="verified-switch-advanced">
+                                                            <label class="custom-control-label"
+                                                                for="verified-switch-advanced">Verified Users</label>
+                                                            <small id="verified-usersHelp"
+                                                                class="form-text text-muted">Get
+                                                                results for verified users only.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-3">
+                                                        <div class="custom-control custom-switch">
+                                                            <input type="checkbox"
+                                                                class="custom-control-input action-weight-switch"
+                                                                id="actions-switch-advanced">
+                                                            <label class="custom-control-label"
+                                                                for="actions-switch-advanced">Assign Weights to Action
+                                                                Types</label>
+                                                            <small id="action-orderHelp"
+                                                                class="form-text text-muted">Weigh
+                                                                actions from least important '0' to most important
+                                                                '1'.</small>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row mt-4" id="togglable" style="display: none">
+                                                        <div class="col">
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p class="action-label">Tweet</p>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <input type="number" step="0.01" max="1" min="0"
+                                                                        class="form-control pad" id="tweet-weight"
+                                                                        placeholder="0-1 (e.g. 0.5)">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p class="action-label">Retweet</p>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <input type="number" step="0.01" max="1" min="0"
+                                                                        class="form-control pad" id="retweet-weight"
+                                                                        placeholder="0-1 (e.g. 0.5)">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p class="action-label">Quote Retweet</p>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <input type="number" step="0.01" max="1" min="0"
+                                                                        class="form-control pad" id="qretweet-weight"
+                                                                        placeholder="0-1 (e.g. 0.5)">
+                                                                </div>
+                                                            </div>
+                                                            <div class="form-row">
+                                                                <div class="col-4">
+                                                                    <p class="action-label">Reply</p>
+                                                                </div>
+                                                                <div class="col-5">
+                                                                    <input type="number" step="0.01" max="1" min="0"
+                                                                        class="form-control pad" id="reply-weight"
+                                                                        placeholder="0-1 (e.g. 0.5)">
+                                                                </div>
+                                                            </div>
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div class="form-row mb-4">
+                                                <div class="col">
+                                                    <div class="form-row">
+                                                        <div class="col">
+                                                            <h4>Window Settings</h4>
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-row justify-content-around">
+                                                        <div class="col-5">
+                                                            <div class="form-row mt-3">
+                                                                <div class="col"><label for="window-size">Window
+                                                                        Size</label>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control"
+                                                                        id="window-size"
+                                                                        aria-describedby="window-sizwHelp"
+                                                                        placeholder="e.g. 5" min="0.1" step="0.1">
+                                                                    <small id="window-sizwHelp"
+                                                                        class="form-text text-muted">Specify the
+                                                                        window size in minutes.</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <div class="form-row mt-3">
+                                                                <div class="col"><label for="update-interval">Update
+                                                                        Interval</label>
+                                                                </div>
+                                                                <div class="col">
+                                                                    <input type="number" class="form-control"
+                                                                        id="update-interval"
+                                                                        aria-describedby="update-intervalHelp"
+                                                                        placeholder="e.g. 1" min="0.1" step="0.1">
+                                                                    <small id="update-intervalHelp"
+                                                                        class="form-text text-muted">Specify
+                                                                        how frequent
+                                                                        the window makes a slide, in minutes.</small>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+
+                                            <div class="row justify-content-center">
+                                                <div class="col-4" style="text-align: center;">
+                                                    <button type="submit" class="btn btn-primary"
+                                                        id="submit">Submit</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div id="loading">
+                        <div class="preloader">
+                            <span></span>
+                            <span></span>
+                            <span></span>
+                        </div>
+                        <p class="green" style="text-align: center">Looking for influencers...</p>
+                        <div>
+                            <p class="green" style="text-align: center; font-size: 20px" id="refresh-display">01:00</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row justify-content-center" style="margin-top: 200px">
+            <div class="col-10">
+
+            </div>
+        </div>
+
+        <div class="row justify-content-center">
+            <div class="col-10">
+                <p class="green" style="text-align: center"><em>Identifying Twitter Influencers © 2020</em></p>
+            </div>
+        </div>
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/bootstrap-material-design@4.1.1/dist/js/bootstrap-material-design.js"
+        integrity="sha384-CauSuKpEqAFajSpkdjv3z9t8E7RlpJ1UP0lKM/+NdtSarroVKu069AlsRPKkFBz9"
+        crossorigin="anonymous"></script>
+    <script src="{{ url_for('static', filename='search.js') }}"></script>
+
+
+</body>
+
+</html>
